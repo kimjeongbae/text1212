@@ -1,15 +1,17 @@
 package org.example;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.example.db.DBConnection;
 import org.example.member.Member;
 
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Global {
     private static Scanner scanner;
     private static Member loginedMember;
+
+    private static DBConnection dbConnection;
 
     public static void initScanner() {
         scanner = new Scanner(System.in);
@@ -23,6 +25,14 @@ public class Global {
         return scanner;
     }
 
+    public static DBConnection getDBConnection () {
+        if (dbConnection == null) {
+            dbConnection = new DBConnection();
+        }
+
+        return dbConnection;
+    }
+
     public static Member getLoginedMember() {
         return loginedMember;
     }
@@ -32,8 +42,9 @@ public class Global {
     }
 
     public static String nowDateTime() {
-        String now = LocalDate.now().toString();
-        return now;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date time = new Date();
+        return format.format(time);
     }
 
 }

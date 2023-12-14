@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.article.ArticleController;
+import org.example.db.DBConnection;
 import org.example.member.MemberController;
 
 public class App {
@@ -9,6 +10,13 @@ public class App {
     MemberController memberController;
 
     App () {
+        DBConnection.DB_NAME = "a9";
+        DBConnection.DB_PORT = 3306;
+        DBConnection.DB_USER = "root";
+        DBConnection.DB_PASSWORD = "";
+
+        Global.getDBConnection().connect();
+
         articleController = new ArticleController();
         memberController = new MemberController();
     }

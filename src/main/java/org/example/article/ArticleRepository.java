@@ -7,21 +7,19 @@ import java.util.List;
 import java.util.Map;
 
 public class ArticleRepository {
-    List<Article> articleList = new ArrayList<>();
-    int lastArticleId = 1;
-
     public int save (String title, String content) {
-        Article article = new Article(lastArticleId, title, content, Global.getLoginedMember().getId(), Global.nowDateTime());
-        articleList.add(article);
+        String sql = String.format("INSERT INTO article SET title='%s', content='%s', memberId=%d, regDate=now();", title, content, Global.getLoginedMember().getId());
 
-        lastArticleId++;
+        int id = Global.getDBConnection().insert(sql);
 
-        return article.getId();
+        return id;
     }
 
     public List<Article> findByAll() {
+        List<Article> articleList = new ArrayList<>();
+
         List<Map<String, Object>> rows =  Global.getDBConnection().selectRows("select * from article");
-        System.out.println(rows);
+
         for (Map<String, Object> row : rows) {
             Article article = new Article(row);
 
@@ -31,20 +29,19 @@ public class ArticleRepository {
         return articleList;
     }
 
-    public int delete(Article article) {
-        articleList.remove(article);
-
-        return article.getId();
+    public void delete(Article article) {
+        String sql = String.format("DELETE FROM article where id=%d;", article.getId());
+        Global.getDBConnection().delete(sql);
     }
 
-    public int update(Article article, String title, String content) {
-        article.setTitle(title);
-        article.setContent(content);
+    public void update(Article article, String title, String content) {
+        String sql = String.format("UPDATE article set title='%s', content='%s' where id=%d;", title, content, article.getId());
 
-        return article.getId();
+        Global.getDBConnection().update(sql);
     }
 
     public Article articleFindById(int id) {
+        List<Article> articleList = this.findByAll();
         for (int i = 0; i < articleList.size(); i++) {
             if (id == articleList.get(i).getId()) {
                 return articleList.get(i);
